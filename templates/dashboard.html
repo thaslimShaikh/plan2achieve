@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="dashboard">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2 class="logo">Plan2Achieve</h2>
+
+<ul>
+
+<li><i data-lucide="home"></i> Home</li>
+
+<li><i data-lucide="target"></i> Goals</li>
+
+<li><i data-lucide="check-circle"></i> Tasks</li>
+
+<li><i data-lucide="bar-chart"></i> Progress</li>
+
+</ul>
+
+</div>
+
+
+<!-- MAIN CONTENT -->
+
+<div class="main">
+
+<h1 class="dashboard-title">
+Hello {{nickname}}
+</h1>
+
+<div class="card-row">
+
+<div class="stat-card">
+
+<h3>Tasks Completed</h3>
+
+<p class="big-number">12</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>Tasks Remaining</h3>
+
+<p class="big-number">8</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>Consistency</h3>
+
+<p class="big-number">75%</p>
+
+</div>
+
+</div>
+
+
+<!-- TASK LIST -->
+
+<div class="task-panel">
+
+<h3>Today's Tasks</h3>
+
+<div class="task-item">
+<input type="checkbox">
+<span>Research your goal</span>
+</div>
+
+<div class="task-item">
+<input type="checkbox">
+<span>Start first step</span>
+</div>
+
+<div class="task-item">
+<input type="checkbox">
+<span>Track today's progress</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

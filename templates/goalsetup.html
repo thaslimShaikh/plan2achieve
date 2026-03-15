@@ -5,16 +5,20 @@
 <div class="goal-wrapper text-center">
 
 <h2 class="goal-title">
-Hello {{nickname}} 👋
+Hello {{nickname}} 🫶🏻
 </h2>
 
 <p class="tagline">
-Let's plan your next achievement
+Let’s plan something beautiful today 🌷
 </p>
 
 <div class="goal-card mx-auto">
 
-<form>
+<form action="/dashboard" method="GET">
+
+<!-- PASS NICKNAME -->
+<input type="hidden" name="nickname" value="{{nickname}}">
+
 
 <label class="input-label">
 
@@ -23,7 +27,14 @@ Let's plan your next achievement
 
 </label>
 
-<input type="text" class="form-control mb-3">
+<input 
+type="text" 
+name="goal"
+class="form-control nickname-input mb-4"
+placeholder="Example: Learn Python Basics"
+required
+>
+
 
 <label class="input-label">
 
@@ -32,35 +43,45 @@ Let's plan your next achievement
 
 </label>
 
-<select class="form-select mb-3">
+<select name="category" class="form-select nickname-input mb-4">
 
-<option>Personal Growth</option>
-<option>Academic</option>
-<option>Health</option>
-<option>Skill Development</option>
-<option>Life Experience</option>
+<option>Personal Growth 🌸</option>
+<option>Academic 📚</option>
+<option>Health 💪</option>
+<option>Skill Development 🧠</option>
+<option>Life Experience ✨</option>
 
 </select>
+
 
 <label class="input-label">
 
 <i data-lucide="clock"></i>
- Time to achieve
+ Time to achieve (days)
 
 </label>
 
-<select class="form-select mb-3">
+<div class="day-spinner mb-4">
 
-<option>7 Days</option>
-<option>14 Days</option>
-<option>30 Days</option>
-<option>60 Days</option>
+<button type="button" class="spin-btn" onclick="decreaseDays()">−</button>
 
-</select>
+<input 
+type="number"
+name="days"
+id="daysInput"
+value="7"
+min="1"
+max="365"
+class="day-input">
+
+<button type="button" class="spin-btn" onclick="increaseDays()">+</button>
+
+</div>
+
 
 <button class="generate-btn">
 
-Generate Plan
+Generate My Plan 💕
 
 </button>
 
@@ -69,5 +90,27 @@ Generate Plan
 </div>
 
 </div>
+
+
+<script>
+
+function increaseDays(){
+
+let input=document.getElementById("daysInput");
+input.value=parseInt(input.value)+1;
+
+}
+
+function decreaseDays(){
+
+let input=document.getElementById("daysInput");
+
+if(input.value>1){
+input.value=parseInt(input.value)-1;
+}
+
+}
+
+</script>
 
 {% endblock %}
