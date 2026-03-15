@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="welcome-wrapper text-center">
+
+<h1 class="main-title">Welcome to Plan2Achieve</h1>
+
+<p class="tagline">
+Turn your goals into daily achievable actions
+</p>
+
+<div class="welcome-card mx-auto">
+
+<form action="/goalsetup">
+
+<label class="mb-3 input-label">
+
+<i data-lucide="user"></i>
+ What should we call you?
+
+</label>
+
+<input
+type="text"
+name="nickname"
+class="form-control nickname-input"
+placeholder="Enter your nickname"
+required
+>
+
+<button class="start-btn mt-4">
+
+<i data-lucide="arrow-right"></i>
+ Start Planning
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% endblock %}

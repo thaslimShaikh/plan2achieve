@@ -1,0 +1,185 @@
+body{
+font-family:'Poppins',sans-serif;
+
+background:linear-gradient(135deg,#DFC1CB,#F8EFF3);
+
+height:100vh;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+margin:0;
+}
+
+/* TITLE FONT */
+
+.main-title{
+
+font-family:'Racing Sans One',cursive;
+
+font-size:60px;
+
+color:#4b3e38;
+
+letter-spacing:2px;
+
+animation:floatTitle 3s ease-in-out infinite;
+}
+
+/* TAGLINE */
+
+.tagline{
+
+color:#7a6c67;
+
+font-size:18px;
+
+margin-bottom:35px;
+
+animation:fadeIn 1.5s ease;
+}
+
+/* CARD */
+
+.welcome-card{
+
+background:white;
+
+padding:50px;
+
+border-radius:25px;
+
+width:420px;
+
+box-shadow:
+0 15px 35px rgba(0,0,0,0.07),
+0 25px 45px rgba(0,0,0,0.06);
+
+animation:cardAppear 0.9s ease;
+
+transition:0.3s;
+}
+
+.welcome-card:hover{
+
+transform:translateY(-6px);
+}
+
+/* INPUT */
+
+.nickname-input{
+
+border-radius:12px;
+
+border:2px solid #DFC1CB;
+
+padding:14px;
+
+font-size:15px;
+
+transition:0.3s;
+}
+
+.nickname-input:focus{
+
+border-color:#C48197;
+
+box-shadow:0 0 0 4px rgba(196,129,151,0.2);
+}
+
+/* BUTTON */
+
+.start-btn{
+
+background:linear-gradient(135deg,#C48197,#B66681);
+
+color:white;
+
+border:none;
+
+padding:14px 30px;
+
+border-radius:12px;
+
+font-weight:500;
+
+font-size:16px;
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+transition:0.25s;
+
+animation:buttonBounce 2.5s infinite;
+}
+
+.start-btn:hover{
+
+transform:scale(1.05);
+
+box-shadow:0 8px 20px rgba(182,102,129,0.35);
+}
+
+/* ANIMATIONS */
+
+/* floating title */
+
+@keyframes floatTitle{
+
+0%{transform:translateY(0px)}
+
+50%{transform:translateY(-6px)}
+
+100%{transform:translateY(0px)}
+
+}
+
+/* card entry */
+
+@keyframes cardAppear{
+
+from{
+
+opacity:0;
+
+transform:translateY(40px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+/* fade */
+
+@keyframes fadeIn{
+
+from{opacity:0}
+
+to{opacity:1}
+
+}
+
+/* button bounce */
+
+@keyframes buttonBounce{
+
+0%{transform:translateY(0)}
+
+50%{transform:translateY(-3px)}
+
+100%{transform:translateY(0)}
+
+}

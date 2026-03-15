@@ -1,10 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 @app.route("/")
-def home():
-    return "Plan2Achieve App Running"
+def welcome():
+    return render_template("welcome.html")
+
+@app.route("/goalsetup")
+def goalsetup():
+    nickname = request.args.get("nickname")
+    return render_template("goalsetup.html", nickname=nickname)
 
 if __name__ == "__main__":
     app.run(debug=True)

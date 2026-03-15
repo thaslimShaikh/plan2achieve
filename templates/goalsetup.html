@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="goal-wrapper text-center">
+
+<h2 class="goal-title">
+Hello {{nickname}} 👋
+</h2>
+
+<p class="tagline">
+Let's plan your next achievement
+</p>
+
+<div class="goal-card mx-auto">
+
+<form>
+
+<label class="input-label">
+
+<i data-lucide="target"></i>
+ What goal do you want to achieve?
+
+</label>
+
+<input type="text" class="form-control mb-3">
+
+<label class="input-label">
+
+<i data-lucide="layers"></i>
+ Goal Category
+
+</label>
+
+<select class="form-select mb-3">
+
+<option>Personal Growth</option>
+<option>Academic</option>
+<option>Health</option>
+<option>Skill Development</option>
+<option>Life Experience</option>
+
+</select>
+
+<label class="input-label">
+
+<i data-lucide="clock"></i>
+ Time to achieve
+
+</label>
+
+<select class="form-select mb-3">
+
+<option>7 Days</option>
+<option>14 Days</option>
+<option>30 Days</option>
+<option>60 Days</option>
+
+</select>
+
+<button class="generate-btn">
+
+Generate Plan
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% endblock %}
