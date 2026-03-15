@@ -30,7 +30,7 @@
 <div class="main">
 
 <h1 class="dashboard-title">
-Hello {{nickname}}
+Hello {{nickname}} 🫶🏻
 </h1>
 
 <div class="card-row">
@@ -39,7 +39,7 @@ Hello {{nickname}}
 
 <h3>Tasks Completed</h3>
 
-<p class="big-number">12</p>
+<p class="big-number">{{completed}}</p>
 
 </div>
 
@@ -47,7 +47,7 @@ Hello {{nickname}}
 
 <h3>Tasks Remaining</h3>
 
-<p class="big-number">8</p>
+<p class="big-number">{{remaining}}</p>
 
 </div>
 
@@ -55,7 +55,7 @@ Hello {{nickname}}
 
 <h3>Consistency</h3>
 
-<p class="big-number">75%</p>
+<p class="big-number">{{consistency}}%</p>
 
 </div>
 
@@ -66,22 +66,16 @@ Hello {{nickname}}
 
 <div class="task-panel">
 
-<h3>Today's Tasks</h3>
+<h3>Your Goal Tasks</h3>
+
+{% for task in tasks %}
 
 <div class="task-item">
 <input type="checkbox">
-<span>Research your goal</span>
+<span>{{task}}</span>
 </div>
 
-<div class="task-item">
-<input type="checkbox">
-<span>Start first step</span>
-</div>
-
-<div class="task-item">
-<input type="checkbox">
-<span>Track today's progress</span>
-</div>
+{% endfor %}
 
 </div>
 
