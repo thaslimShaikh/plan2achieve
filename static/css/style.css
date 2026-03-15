@@ -258,3 +258,26 @@ margin:8px 0;
 align-items:center;
 font-weight:500;
 }
+
+.task-item.completed span{
+text-decoration: line-through;
+opacity: 0.6;
+}
+
+.progress-ring{
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.progress-ring svg{
+transform:rotate(-90deg);
+}
+
+.progress-text{
+position:absolute;
+font-size:18px;
+font-weight:600;
+color:#B66681;
+}

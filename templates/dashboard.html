@@ -5,28 +5,20 @@
 <div class="dashboard">
 
 <!-- SIDEBAR -->
-
 <div class="sidebar">
-
 <h2 class="logo">Plan2Achieve</h2>
 
 <ul>
-
 <li><i data-lucide="home"></i> Home</li>
-
 <li><i data-lucide="target"></i> Goals</li>
-
 <li><i data-lucide="check-circle"></i> Tasks</li>
-
 <li><i data-lucide="bar-chart"></i> Progress</li>
-
 </ul>
 
 </div>
 
 
 <!-- MAIN CONTENT -->
-
 <div class="main">
 
 <h1 class="dashboard-title">
@@ -36,26 +28,49 @@ Hello {{nickname}} 🫶🏻
 <div class="card-row">
 
 <div class="stat-card">
-
 <h3>Tasks Completed</h3>
-
-<p class="big-number">{{completed}}</p>
-
+<p class="big-number" id="completedCount">0</p>
 </div>
 
 <div class="stat-card">
-
 <h3>Tasks Remaining</h3>
-
-<p class="big-number">{{remaining}}</p>
-
+<p class="big-number" id="remainingCount">{{remaining}}</p>
 </div>
 
 <div class="stat-card">
 
 <h3>Consistency</h3>
 
-<p class="big-number">{{consistency}}%</p>
+<div class="progress-ring">
+
+<svg width="120" height="120">
+
+<circle
+cx="60"
+cy="60"
+r="50"
+stroke="#eee"
+stroke-width="10"
+fill="none"
+/>
+
+<circle
+cx="60"
+cy="60"
+r="50"
+stroke="#C48197"
+stroke-width="10"
+fill="none"
+stroke-dasharray="314"
+stroke-dashoffset="314"
+id="progressCircle"
+/>
+
+</svg>
+
+<div class="progress-text" id="consistencyCount">0%</div>
+
+</div>
 
 </div>
 
@@ -71,8 +86,11 @@ Hello {{nickname}} 🫶🏻
 {% for task in tasks %}
 
 <div class="task-item">
-<input type="checkbox">
+
+<input type="checkbox" class="taskCheckbox">
+
 <span>{{task}}</span>
+
 </div>
 
 {% endfor %}
@@ -82,5 +100,52 @@ Hello {{nickname}} 🫶🏻
 </div>
 
 </div>
+
+
+<script>
+
+const checkboxes = document.querySelectorAll(".taskCheckbox");
+
+const completedDisplay = document.getElementById("completedCount");
+const remainingDisplay = document.getElementById("remainingCount");
+const consistencyDisplay = document.getElementById("consistencyCount");
+
+const progressCircle = document.getElementById("progressCircle");
+
+const totalTasks = checkboxes.length;
+const circumference = 314;
+
+checkboxes.forEach(box => {
+box.addEventListener("change", updateStats);
+});
+
+function updateStats(){
+
+let completed = 0;
+
+checkboxes.forEach(box => {
+
+if(box.checked){
+completed++;
+box.parentElement.classList.add("completed");
+}else{
+box.parentElement.classList.remove("completed");
+}
+
+});
+
+let remaining = totalTasks - completed;
+let consistency = Math.round((completed / totalTasks) * 100);
+
+completedDisplay.textContent = completed;
+remainingDisplay.textContent = remaining;
+consistencyDisplay.textContent = consistency + "%";
+
+let offset = circumference - (consistency / 100) * circumference;
+progressCircle.style.strokeDashoffset = offset;
+
+}
+
+</script>
 
 {% endblock %}
