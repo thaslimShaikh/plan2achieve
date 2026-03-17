@@ -7,7 +7,10 @@
 <!-- SIDEBAR -->
 <div class="sidebar">
 
-<h2 class="logo">Plan2Achieve</h2>
+<h2 class="logo">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" width="35">
+    Plan2Achieve
+</h2>
 
 <ul>
 
@@ -200,13 +203,6 @@ document.getElementById("goalCompleteCard").style.display = "block";
 
 /* SAVE GOAL TO HISTORY */
 
-let goalName = "{{goal}}";
-
-let history = JSON.parse(localStorage.getItem("goalHistory")) || [];
-
-history.push(goalName);
-
-localStorage.setItem("goalHistory", JSON.stringify(history));
 
 }
 
@@ -234,5 +230,11 @@ motivationBox.innerText = "🌸 One more push!";
 }
 
 </script>
+
+<div class="category-label">✨ AI Predicted Category</div>
+
+<div class="category-box">
+    {{category}} 🌸
+</div>
 
 {% endblock %}

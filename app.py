@@ -1,15 +1,24 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, session
+import sqlite3
 import requests
 
 app = Flask(__name__)
+app.secret_key = "secret123"
 
-# Your Serper API key
+
+# ================= DATABASE =================
+
+def get_db():
+    return sqlite3.connect("database.db")
+
+
+# ================= SERPER API =================
+
 SERPER_API_KEY = "095815c46b3f6e0860985100651ccf740b9d995a"
-
 
 def generate_plan(goal, days):
 
-    query = f"how to {goal}"
+    query = f"how to {goal} step by step actionable steps"
 
     url = "https://google.serper.dev/search"
 
@@ -21,94 +30,187 @@ def generate_plan(goal, days):
     payload = {"q": query}
 
     response = requests.post(url, headers=headers, json=payload)
-
     data = response.json()
 
     steps = []
 
     for item in data.get("organic", []):
-
         snippet = item.get("snippet", "")
 
         if snippet:
-
-            # remove truncated endings
             snippet = snippet.replace("...", "")
-            snippet = snippet.replace("..", "")
-
             sentences = snippet.split(". ")
 
             for s in sentences:
+                s = s.strip()
 
-                clean = s.strip()
+                if 20 < len(s) < 100 and "?" not in s:
+                    if not s.endswith("."):
+                        s += "."
+                    steps.append(s)
 
-                # filter short / weird sentences
-                if len(clean) > 20 and len(clean) < 100:
+    # remove duplicates
+    steps = list(dict.fromkeys(steps))
 
-                    # remove questions and odd text
-                    if "?" not in clean and ":" not in clean:
-
-                        steps.append(clean)
-
+    # 🚨 IMPORTANT: NO fallback, just handle safely
     if len(steps) == 0:
-        raise Exception("No usable steps returned")
+        return []   # return empty list instead of crashing
 
     tasks = []
-
     for i in range(days):
-
         step = steps[i % len(steps)]
-
-        # ensure sentence ends properly
-        if not step.endswith("."):
-            step += "."
-
         tasks.append(f"Day {i+1}: {step}")
 
     return tasks
 
 
-@app.route("/")
-def welcome():
-    return render_template("welcome.html")
+# ================= ROUTES =================
 
+@app.route("/")
+def home():
+    return redirect("/login")
+
+
+# ---------- REGISTER ----------
+
+@app.route("/register", methods=["GET","POST"])
+def register():
+
+    if request.method == "POST":
+
+        username = request.form["username"]
+        password = request.form["password"]
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        try:
+            cur.execute(
+                "INSERT INTO users (username,password) VALUES (?,?)",
+                (username, password)
+            )
+            conn.commit()
+        except:
+            return "User already exists!"
+
+        conn.close()
+        return redirect("/login")
+
+    return render_template("register.html")
+
+
+# ---------- LOGIN ----------
+
+@app.route("/login", methods=["GET","POST"])
+def login():
+
+    if request.method == "POST":
+
+        username = request.form["username"]
+        password = request.form["password"]
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute(
+            "SELECT * FROM users WHERE username=? AND password=?",
+            (username, password)
+        )
+
+        user = cur.fetchone()
+        conn.close()
+
+        if user:
+            session["user"] = username
+            return redirect("/goalsetup")
+
+        return "Invalid login!"
+
+    return render_template("login.html")
+
+
+# ---------- LOGOUT ----------
+
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect("/login")
+
+
+# ---------- GOAL SETUP ----------
 
 @app.route("/goalsetup")
 def goalsetup():
-    nickname = request.args.get("nickname")
-    return render_template("goalsetup.html", nickname=nickname)
 
+    if "user" not in session:
+        return redirect("/login")
+
+    return render_template("goalsetup.html", nickname=session["user"])
+
+
+# ---------- DASHBOARD ----------
 
 @app.route("/dashboard")
 def dashboard():
 
-    nickname = request.args.get("nickname", "Friend")
-    goal = request.args.get("goal", "")
-    category = request.args.get("category", "")
+    if "user" not in session:
+        return redirect("/login")
+
+    username = session["user"]
+
+    goal = request.args.get("goal")
     days = request.args.get("days")
 
     tasks = []
 
-    if days:
+    if goal and days:
         days = int(days)
-        tasks = generate_plan(goal, days)
 
-    total_tasks = len(tasks)
+        # SAVE GOAL IN DATABASE
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute(
+            "INSERT INTO goals (username, goal, days) VALUES (?, ?, ?)",
+            (username, goal, days)
+        )
+
+        conn.commit()
+        conn.close()
+
+        tasks = generate_plan(goal, days)
 
     return render_template(
         "dashboard.html",
-        nickname=nickname,
+        nickname=username,
         goal=goal,
         tasks=tasks,
-        total=total_tasks,
-        remaining=total_tasks
+        remaining=len(tasks)
     )
 
 
+# ---------- HISTORY ----------
+
 @app.route("/history")
 def history():
-    return render_template("history.html")
 
+    if "user" not in session:
+        return redirect("/login")
+
+    username = session["user"]
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("SELECT goal FROM goals WHERE username=?", (username,))
+    goals = cur.fetchall()
+
+    conn.close()
+
+    return render_template("history.html", goals=goals)
+
+
+# ================= RUN =================
 
 if __name__ == "__main__":
     app.run(debug=True)

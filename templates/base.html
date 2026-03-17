@@ -26,18 +26,22 @@
 
 <body>
 
+<button onclick="toggleMode()" class="theme-btn">🌙</button>
+
 <div class="main-container">
-
 {% block content %}
-
 {% endblock %}
-
 </div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 <script>
 lucide.createIcons();
 </script>
 
+<footer class="footer">
+© 2026 Plan2Achieve 💕 All rights reserved
+</footer>
 </body>
 
 </html>

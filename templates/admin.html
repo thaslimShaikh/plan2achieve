@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="dashboard">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+<h2 class="logo">Plan2Achieve</h2>
+
+<ul>
+<li><a href="/dashboard">Home</a></li>
+<li><a href="/history">History</a></li>
+<li><a href="/logout">Logout</a></li>
+</ul>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h1 class="dashboard-title">Admin Panel 👑</h1>
+
+<div class="task-panel">
+
+<h3>All Users</h3>
+
+<table style="width:100%; text-align:center;">
+
+<tr>
+<th>ID</th>
+<th>Username</th>
+<th>Action</th>
+</tr>
+
+{% for user in users %}
+
+<tr>
+<td>{{ user[0] }}</td>
+<td>{{ user[1] }}</td>
+
+<td>
+<a href="/delete_user/{{ user[0] }}" 
+   style="color:red; text-decoration:none;">
+   Delete ❌
+</a>
+</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
