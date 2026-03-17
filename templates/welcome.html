@@ -7,23 +7,24 @@
 <h1 class="main-title">Welcome to Plan2Achieve</h1>
 
 <p class="tagline">
-Turn your goals into daily achievable actions
+Turn your goals into daily achievable actions 🌸
 </p>
 
 <div class="welcome-card mx-auto">
 
-<form action="/goalsetup">
+<form action="/goalsetup" method="GET" onsubmit="return validateNickname()">
 
 <label class="mb-3 input-label">
 
 <i data-lucide="user"></i>
- What should we call you?
+What should we call you?
 
 </label>
 
 <input
 type="text"
 name="nickname"
+id="nicknameInput"
 class="form-control nickname-input"
 placeholder="Enter your nickname"
 required
@@ -32,7 +33,7 @@ required
 <button class="start-btn mt-4">
 
 <i data-lucide="arrow-right"></i>
- Start Planning
+Start Planning
 
 </button>
 
@@ -41,5 +42,26 @@ required
 </div>
 
 </div>
+
+
+<script>
+
+function validateNickname(){
+
+let name=document.getElementById("nicknameInput").value.trim();
+
+if(name.length===0){
+
+alert("Please enter your nickname 💕");
+
+return false;
+
+}
+
+return true;
+
+}
+
+</script>
 
 {% endblock %}

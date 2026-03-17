@@ -259,11 +259,6 @@ align-items:center;
 font-weight:500;
 }
 
-.task-item.completed span{
-text-decoration: line-through;
-opacity: 0.6;
-}
-
 .progress-ring{
 position:relative;
 display:flex;
@@ -280,4 +275,32 @@ position:absolute;
 font-size:18px;
 font-weight:600;
 color:#B66681;
+}
+
+.motivation-box{
+background:white;
+padding:15px;
+border-radius:12px;
+margin-bottom:20px;
+font-weight:500;
+color:#B66681;
+box-shadow:0 5px 12px rgba(0,0,0,0.05);
+text-align:center;
+}
+
+.goal-complete-card{
+background:#FFE8F0;
+padding:18px;
+border-radius:12px;
+margin-bottom:20px;
+font-weight:600;
+color:#B66681;
+text-align:center;
+box-shadow:0 5px 12px rgba(0,0,0,0.05);
+}
+
+.task-item.completed span{
+text-decoration:line-through;
+opacity:0.6;
+transition:0.3s;
 }

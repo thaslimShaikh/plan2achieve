@@ -6,13 +6,23 @@
 
 <!-- SIDEBAR -->
 <div class="sidebar">
+
 <h2 class="logo">Plan2Achieve</h2>
 
 <ul>
-<li><i data-lucide="home"></i> Home</li>
-<li><i data-lucide="target"></i> Goals</li>
-<li><i data-lucide="check-circle"></i> Tasks</li>
-<li><i data-lucide="bar-chart"></i> Progress</li>
+
+<li>
+<a href="/dashboard">
+<i data-lucide="home"></i> Home
+</a>
+</li>
+
+<li>
+<a href="/history">
+<i data-lucide="clock"></i> History
+</a>
+</li>
+
 </ul>
 
 </div>
@@ -25,6 +35,7 @@
 Hello {{nickname}} 🫶🏻
 </h1>
 
+
 <div class="card-row">
 
 <div class="stat-card">
@@ -35,6 +46,11 @@ Hello {{nickname}} 🫶🏻
 <div class="stat-card">
 <h3>Tasks Remaining</h3>
 <p class="big-number" id="remainingCount">{{remaining}}</p>
+</div>
+
+<div class="stat-card">
+<h3>Streak 🔥</h3>
+<p class="big-number" id="streakCount">0</p>
 </div>
 
 <div class="stat-card">
@@ -77,6 +93,23 @@ id="progressCircle"
 </div>
 
 
+<!-- MOTIVATION BOX -->
+
+<div class="motivation-box" id="motivationBox">
+🌸 Small steps every day create big achievements
+</div>
+
+
+<!-- GOAL COMPLETION CARD -->
+
+<div class="goal-complete-card" id="goalCompleteCard" style="display:none;">
+
+🎉 Congratulations {{nickname}}!  
+You completed your goal successfully 💕
+
+</div>
+
+
 <!-- TASK LIST -->
 
 <div class="task-panel">
@@ -102,6 +135,10 @@ id="progressCircle"
 </div>
 
 
+<!-- CONFETTI LIBRARY -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+
 <script>
 
 const checkboxes = document.querySelectorAll(".taskCheckbox");
@@ -109,8 +146,9 @@ const checkboxes = document.querySelectorAll(".taskCheckbox");
 const completedDisplay = document.getElementById("completedCount");
 const remainingDisplay = document.getElementById("remainingCount");
 const consistencyDisplay = document.getElementById("consistencyCount");
-
 const progressCircle = document.getElementById("progressCircle");
+const motivationBox = document.getElementById("motivationBox");
+const streakDisplay = document.getElementById("streakCount");
 
 const totalTasks = checkboxes.length;
 const circumference = 314;
@@ -118,6 +156,7 @@ const circumference = 314;
 checkboxes.forEach(box => {
 box.addEventListener("change", updateStats);
 });
+
 
 function updateStats(){
 
@@ -140,9 +179,57 @@ let consistency = Math.round((completed / totalTasks) * 100);
 completedDisplay.textContent = completed;
 remainingDisplay.textContent = remaining;
 consistencyDisplay.textContent = consistency + "%";
+streakDisplay.textContent = completed;
 
 let offset = circumference - (consistency / 100) * circumference;
 progressCircle.style.strokeDashoffset = offset;
+
+updateMotivation(consistency);
+
+if(consistency === 100){
+
+confetti({
+particleCount:200,
+spread:120,
+origin:{y:0.6}
+});
+
+motivationBox.innerText = "🎉 Goal completed! Amazing work!";
+document.getElementById("goalCompleteCard").style.display = "block";
+
+
+/* SAVE GOAL TO HISTORY */
+
+let goalName = "{{goal}}";
+
+let history = JSON.parse(localStorage.getItem("goalHistory")) || [];
+
+history.push(goalName);
+
+localStorage.setItem("goalHistory", JSON.stringify(history));
+
+}
+
+}
+
+
+function updateMotivation(percent){
+
+if(percent < 30){
+motivationBox.innerText = "🌷 Great start! Keep going.";
+}
+
+else if(percent < 60){
+motivationBox.innerText = "💕 You're making progress!";
+}
+
+else if(percent < 90){
+motivationBox.innerText = "🎀 Almost there!";
+}
+
+else if(percent < 100){
+motivationBox.innerText = "🌸 One more push!";
+}
 
 }
 

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="dashboard">
+
+<div class="sidebar">
+
+<h2 class="logo">Plan2Achieve</h2>
+
+<ul>
+<li><a href="/dashboard"><i data-lucide="home"></i> Home</a></li>
+<li><a href="/history"><i data-lucide="clock"></i> History</a></li>
+</ul>
+
+</div>
+
+
+<div class="main">
+
+<h1 class="dashboard-title">
+Goal History 📜
+</h1>
+
+<div class="task-panel">
+
+<h3>Your Completed Goals</h3>
+
+<ul id="historyList"></ul>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const historyList = document.getElementById("historyList");
+
+let goals = JSON.parse(localStorage.getItem("goalHistory")) || [];
+
+goals.forEach(goal => {
+
+let li = document.createElement("li");
+li.innerText = goal;
+
+historyList.appendChild(li);
+
+});
+
+</script>
+
+{% endblock %}

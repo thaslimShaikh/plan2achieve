@@ -14,7 +14,7 @@ Let’s plan something beautiful today 🌷
 
 <div class="goal-card mx-auto">
 
-<form action="/dashboard" method="GET">
+<form action="/dashboard" method="GET" onsubmit="return validateGoal()">
 
 <!-- PASS NICKNAME -->
 <input type="hidden" name="nickname" value="{{nickname}}">
@@ -23,15 +23,16 @@ Let’s plan something beautiful today 🌷
 <label class="input-label">
 
 <i data-lucide="target"></i>
- What goal do you want to achieve?
+What goal do you want to achieve?
 
 </label>
 
 <input 
 type="text" 
 name="goal"
+id="goalInput"
 class="form-control nickname-input mb-4"
-placeholder="Example: Learn Python Basics"
+placeholder="Example: Build a portfolio website"
 required
 >
 
@@ -39,7 +40,7 @@ required
 <label class="input-label">
 
 <i data-lucide="layers"></i>
- Goal Category
+Goal Category
 
 </label>
 
@@ -57,7 +58,7 @@ required
 <label class="input-label">
 
 <i data-lucide="clock"></i>
- Time to achieve (days)
+Time to achieve (days)
 
 </label>
 
@@ -108,6 +109,23 @@ let input=document.getElementById("daysInput");
 if(input.value>1){
 input.value=parseInt(input.value)-1;
 }
+
+}
+
+
+function validateGoal(){
+
+let goal=document.getElementById("goalInput").value.trim();
+
+if(goal.length===0){
+
+alert("Please enter a goal first 🌸");
+
+return false;
+
+}
+
+return true;
 
 }
 
