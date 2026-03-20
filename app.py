@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
 import sqlite3
 import requests
+import re
+from model.predict import predict_category
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -16,9 +18,10 @@ def get_db():
 
 SERPER_API_KEY = "095815c46b3f6e0860985100651ccf740b9d995a"
 
+
 def generate_plan(goal, days):
 
-    query = f"how to {goal} step by step actionable steps"
+    query = f"{goal} daily tasks checklist what to do each day actionable steps"
 
     url = "https://google.serper.dev/search"
 
@@ -34,36 +37,66 @@ def generate_plan(goal, days):
 
     steps = []
 
+    # ================= CLEANING =================
     for item in data.get("organic", []):
         snippet = item.get("snippet", "")
 
-        if snippet:
-            snippet = snippet.replace("...", "")
-            sentences = snippet.split(". ")
+        if not snippet:
+            continue
 
-            for s in sentences:
-                s = s.strip()
+        sentences = re.split(r"[.]", snippet)
 
-                if 20 < len(s) < 100 and "?" not in s:
-                    if not s.endswith("."):
-                        s += "."
-                    steps.append(s)
+        for s in sentences:
+            s = s.strip()
+
+            # remove numbering
+            s = re.sub(r"^\(?\d+\)?[\.\)]?\s*", "", s)
+
+            # remove step words
+            s = re.sub(r"step\s*\d+[:\-]?\s*", "", s, flags=re.IGNORECASE)
+
+            # remove motivational / explanation junk
+            if any(word in s.lower() for word in [
+                "is key", "is important", "to overcome",
+                "this helps", "this will", "more effective",
+                "why", "benefits", "importance", "tips",
+                "guide", "learn", "example"
+            ]):
+                continue
+
+            # basic length control
+            if len(s.split()) < 5 or len(s.split()) > 18:
+                continue
+
+            # must contain action word (NOT start with it)
+            if not any(word in s.lower() for word in [
+                "review", "write", "study", "practice",
+                "prepare", "revise", "organize", "plan",
+                "complete", "focus", "read", "make",
+                "create", "work", "avoid", "limit",
+                "track", "stop", "start"
+            ]):
+                continue
+
+            s = s.capitalize().strip()
+
+            if not s.endswith("."):
+                s += "."
+
+            steps.append(s)
 
     # remove duplicates
     steps = list(dict.fromkeys(steps))
 
-    # 🚨 IMPORTANT: NO fallback, just handle safely
-    if len(steps) == 0:
-        return []   # return empty list instead of crashing
-
+    # ================= FINAL TASKS =================
     tasks = []
-    for i in range(days):
-        step = steps[i % len(steps)]
-        tasks.append(f"Day {i+1}: {step}")
+
+    limit = min(len(steps), days)
+
+    for i in range(limit):
+        tasks.append(f"Day {i+1}: {steps[i]}")
 
     return tasks
-
-
 # ================= ROUTES =================
 
 @app.route("/")
@@ -72,7 +105,6 @@ def home():
 
 
 # ---------- REGISTER ----------
-
 @app.route("/register", methods=["GET","POST"])
 def register():
 
@@ -100,7 +132,6 @@ def register():
 
 
 # ---------- LOGIN ----------
-
 @app.route("/login", methods=["GET","POST"])
 def login():
 
@@ -130,7 +161,6 @@ def login():
 
 
 # ---------- LOGOUT ----------
-
 @app.route("/logout")
 def logout():
     session.pop("user", None)
@@ -138,7 +168,6 @@ def logout():
 
 
 # ---------- GOAL SETUP ----------
-
 @app.route("/goalsetup")
 def goalsetup():
 
@@ -148,8 +177,19 @@ def goalsetup():
     return render_template("goalsetup.html", nickname=session["user"])
 
 
-# ---------- DASHBOARD ----------
+# ---------- ML CATEGORY ----------
+@app.route("/predict_category")
+def predict_category_api():
+    goal = request.args.get("goal", "")
 
+    if goal:
+        category = predict_category(goal)
+        return jsonify({"category": category})
+
+    return jsonify({"category": ""})
+
+
+# ---------- DASHBOARD ----------
 @app.route("/dashboard")
 def dashboard():
 
@@ -166,7 +206,6 @@ def dashboard():
     if goal and days:
         days = int(days)
 
-        # SAVE GOAL IN DATABASE
         conn = get_db()
         cur = conn.cursor()
 
@@ -190,7 +229,6 @@ def dashboard():
 
 
 # ---------- HISTORY ----------
-
 @app.route("/history")
 def history():
 
